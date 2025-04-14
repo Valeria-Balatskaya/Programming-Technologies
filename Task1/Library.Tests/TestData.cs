@@ -10,7 +10,7 @@ namespace Library.Tests
 {
     public static class TestData
     {
-        // Возвращает один и тот же экземпляр при каждом вызове
+      
         public static User Alice => new User { Id = 1, Name = "Алиса" };
 
         public static CatalogItem CSharpBook => new CatalogItem

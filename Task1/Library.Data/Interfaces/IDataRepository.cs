@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Library.Data.Entities;
-
 namespace Library.Data.Interfaces
 {
     public interface IDataRepository
     {
-        void AddUser(User user);
-        void AddCatalogItem(CatalogItem item);
-        void BorrowBook(User user, CatalogItem book);
-        void ReturnBook(User user, CatalogItem book);
+        IUserRepository Users { get; }
+        ICatalogRepository Catalog { get; }
+        IStateRepository State { get; }
+        IEventRepository Events { get; }
     }
 }

@@ -30,24 +30,26 @@ namespace Library.Logic.Services
 
         public void RegisterUser(IUser user)
         {
-            var newUser = UserFactory.CreateUser(
-                user.Id,
-                user.Name,
-                user.Email,
-                user.PhoneNumber,
-                user.Type,
-                DateTime.Now
-            );
+             var newUser = new User
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Type = user.Type,
+                RegistrationDate = DateTime.Now
+            };
 
             _dataRepository.Users.AddUser(newUser);
 
-            var newEvent = LibraryEventFactory.CreateEvent(
-                GetNextEventId(),
-                EventType.UserRegistered,
-                DateTime.Now,
-                $"User {user.Name} registered",
-                user.Id
-            );
+            var newEvent = new LibraryEvent
+            {
+                Id = GetNextEventId(),
+                Type = EventType.UserRegistered,
+                Timestamp = DateTime.Now,
+                Description = $"User {user.Name} registered",
+                UserId = user.Id
+            };
 
             _dataRepository.Events.AddEvent(newEvent);
         }

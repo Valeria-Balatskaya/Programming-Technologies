@@ -10,9 +10,12 @@ namespace Library.Presentation.ViewModels
     {
         private readonly ILibraryService _service;
         private ObservableBook? _selectedBook;
-        
+        private ObservableUser? _selectedUser;
+
         public ObservableCollection<ObservableBook> Books { get; } = new();
-        public ICommand LoadBooksCommand { get; }
+        public ObservableCollection<ObservableUser> Users { get; } = new();
+        
+        public ICommand LoadDataCommand { get; }
         public ICommand SaveCommand { get; }
 
         public ObservableBook? SelectedBook
@@ -21,24 +24,37 @@ namespace Library.Presentation.ViewModels
             set => SetField(ref _selectedBook, value);
         }
 
+        public ObservableUser? SelectedUser
+        {
+            get => _selectedUser;
+            set => SetField(ref _selectedUser, value);
+        }
+
         public MainViewModel(ILibraryService service)
         {
             _service = service;
-            LoadBooksCommand = new RelayCommand(LoadBooks);
-            SaveCommand = new RelayCommand(SaveChanges);
+            LoadDataCommand = new RelayCommand(LoadData);
+            SaveCommand = new RelayCommand(Save);
         }
 
-        private void LoadBooks()
+        private void LoadData()
         {
             Books.Clear();
             foreach (var book in _service.GetAllBooks())
                 Books.Add(new ObservableBook(book));
+
+            Users.Clear();
+            foreach (var user in _service.GetAllUsers())
+                Users.Add(new ObservableUser(user));
         }
 
-        private void SaveChanges()
+        private void Save()
         {
             foreach (var book in Books)
                 _service.UpdateBook(book.GetBook());
+            
+            foreach (var user in Users)
+                _service.UpdateUser(user.GetUser());
         }
     }
 }

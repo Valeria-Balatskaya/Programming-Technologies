@@ -1,22 +1,31 @@
+using Library.Data.Interfaces.Models;
 using System.ComponentModel;
 
-public class ObservableBook : INotifyPropertyChanged
+namespace Library.Presentation.Models
 {
-    private string _title;
-    public string Title
+    public class ObservableBook : INotifyPropertyChanged
     {
-        get => _title;
-        set
+        private readonly IBook _book;
+
+        public ObservableBook(IBook book) => _book = book;
+        public IBook GetBook() => _book;
+
+        public string ISBN => _book.ISBN;
+        
+        public string Title
         {
-            _title = value;
-            OnPropertyChanged(nameof(Title));
+            get => _book.Title;
+            set { _book.Title = value; OnPropertyChanged(); }
         }
-    }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+        public string Author
+        {
+            get => _book.Author;
+            set { _book.Author = value; OnPropertyChanged(); }
+        }
 
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

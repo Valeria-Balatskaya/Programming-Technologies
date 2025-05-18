@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Library.Data.Interfaces.Models;
+using System.ComponentModel;
 
 namespace Library.Presentation.ViewModels
 {
@@ -7,12 +7,25 @@ namespace Library.Presentation.ViewModels
     {
         private readonly IUser _user;
 
-        public int Id => _user.Id;
-        public string Name => _user.Name;
-        public string Email => _user.Email;
+        public UserViewModel(IUser user)
+        {
+            _user = user;
+        }
+
+        public string Name
+        {
+            get => _user.Name;
+            set
+            {
+                _user.Name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        public UserViewModel(IUser user) => _user = user;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

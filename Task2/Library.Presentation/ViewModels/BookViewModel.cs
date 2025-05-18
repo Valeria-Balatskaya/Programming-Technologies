@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Library.Data.Interfaces.Models;
+using System.ComponentModel;
 
 namespace Library.Presentation.ViewModels
 {
@@ -7,12 +7,27 @@ namespace Library.Presentation.ViewModels
     {
         private readonly IBook _book;
 
+        public BookViewModel(IBook book)
+        {
+            _book = book;
+        }
+
         public string ISBN => _book.ISBN;
-        public string Title => _book.Title;
-        public string Author => _book.Author;
+        
+        public string Title
+        {
+            get => _book.Title;
+            set
+            {
+                _book.Title = value;
+                OnPropertyChanged(nameof(Title));
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        public BookViewModel(IBook book) => _book = book;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

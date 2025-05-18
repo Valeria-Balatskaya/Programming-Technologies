@@ -1,39 +1,44 @@
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Library.Logic.Interfaces;
+using Library.Presentation.Commands;
+using Library.Presentation.Models;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
-public class MainViewModel : INotifyPropertyChanged
+namespace Library.Presentation.ViewModels
 {
-    private readonly ILibraryService _service;
-    private ObservableCollection<BookViewModel> _books;
-    
-    public ObservableCollection<BookViewModel> Books
+    public class MainViewModel : ViewModelBase
     {
-        get => _books;
-        set
+        private readonly ILibraryService _service;
+        private ObservableBook? _selectedBook;
+        
+        public ObservableCollection<ObservableBook> Books { get; } = new();
+        public ICommand LoadBooksCommand { get; }
+        public ICommand SaveCommand { get; }
+
+        public ObservableBook? SelectedBook
         {
-            _books = value;
-            OnPropertyChanged(nameof(Books));
+            get => _selectedBook;
+            set => SetField(ref _selectedBook, value);
         }
-    }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+        public MainViewModel(ILibraryService service)
+        {
+            _service = service;
+            LoadBooksCommand = new RelayCommand(LoadBooks);
+            SaveCommand = new RelayCommand(SaveChanges);
+        }
 
-    public MainViewModel(ILibraryService service)
-    {
-        _service = service;
-        LoadData();
-    }
+        private void LoadBooks()
+        {
+            Books.Clear();
+            foreach (var book in _service.GetAllBooks())
+                Books.Add(new ObservableBook(book));
+        }
 
-    private void LoadData()
-    {
-        Books = new ObservableCollection<BookViewModel>(
-            _service.GetAllBooks().Select(b => new BookViewModel(b))
-        );
-    }
-
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        private void SaveChanges()
+        {
+            foreach (var book in Books)
+                _service.UpdateBook(book.GetBook());
+        }
     }
 }

@@ -1,0 +1,34 @@
+<Window x:Class="Library.Presentation.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Library.Presentation.ViewModels"
+        Title="Library System" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Books">
+                <ListView ItemsSource="{Binding Books}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding Author}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Users">
+                <ListView ItemsSource="{Binding Users}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding Email}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

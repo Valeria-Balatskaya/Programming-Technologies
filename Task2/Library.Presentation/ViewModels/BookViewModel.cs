@@ -1,26 +1,18 @@
 using System.ComponentModel;
 using Library.Data.Interfaces.Models;
 
-public class BookViewModel : INotifyPropertyChanged
+namespace Library.Presentation.ViewModels
 {
-    private readonly IBook _book;
-    
-    public string Title
+    public class BookViewModel : INotifyPropertyChanged
     {
-        get => _book.Title;
-        set
-        {
-            _book.Title = value;
-            OnPropertyChanged(nameof(Title));
-        }
-    }
+        private readonly IBook _book;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+        public string ISBN => _book.ISBN;
+        public string Title => _book.Title;
+        public string Author => _book.Author;
 
-    public BookViewModel(IBook book) => _book = book;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public BookViewModel(IBook book) => _book = book;
     }
 }

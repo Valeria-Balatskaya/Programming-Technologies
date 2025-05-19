@@ -1,60 +1,59 @@
-using Library.Logic.Interfaces;
-using Library.Presentation.Commands;
-using Library.Presentation.Models;
-using System.Collections.ObjectModel;
+﻿using Library.Data.SqlServer.Context;
+using Library.Data.SqlServer.Repositories;
+using Library.Logic;
+using Library.Presentation.ViewModels.Tabs;
+using System.Configuration;
 using System.Windows.Input;
 
 namespace Library.Presentation.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly ILibraryService _service;
-        private ObservableBook? _selectedBook;
-        private ObservableUser? _selectedUser;
+        private ViewModelBase _currentViewModel;
 
-        public ObservableCollection<ObservableBook> Books { get; } = new();
-        public ObservableCollection<ObservableUser> Users { get; } = new();
-        
-        public ICommand LoadDataCommand { get; }
-        public ICommand SaveCommand { get; }
-
-        public ObservableBook? SelectedBook
+        public MainViewModel()
         {
-            get => _selectedBook;
-            set => SetField(ref _selectedBook, value);
+            var connectionString = ConfigurationManager.ConnectionStrings["LibraryDatabase"].ConnectionString;
+            var factory = new LibraryDataContextFactory(connectionString);
+            var context = factory.CreateContext();
+
+            var bookRepository = new BookRepository(context);
+            var userRepository = new UserRepository(context);
+            var bookCopyRepository = new BookCopyRepository(context);
+            var eventRepository = new EventRepository(context);
+
+            ILibraryService libraryService = new LibraryService(
+                context,
+                bookRepository,
+                userRepository,
+                bookCopyRepository,
+                eventRepository);
+
+            BooksViewModel = new BooksViewModel(libraryService);
+            UsersViewModel = new UsersViewModel(libraryService);
+            BookCopiesViewModel = new BookCopiesViewModel(libraryService);
+            TransactionsViewModel = new TransactionsViewModel(libraryService);
+            EventsViewModel = new EventsViewModel(libraryService);
+
+            CurrentViewModel = BooksViewModel;
         }
 
-        public ObservableUser? SelectedUser
+        public ViewModelBase CurrentViewModel
         {
-            get => _selectedUser;
-            set => SetField(ref _selectedUser, value);
+            get => _currentViewModel;
+            set => SetProperty(ref _currentViewModel, value);
         }
 
-        public MainViewModel(ILibraryService service)
-        {
-            _service = service;
-            LoadDataCommand = new RelayCommand(LoadData);
-            SaveCommand = new RelayCommand(Save);
-        }
+        public BooksViewModel BooksViewModel { get; }
+        public UsersViewModel UsersViewModel { get; }
+        public BookCopiesViewModel BookCopiesViewModel { get; }
+        public TransactionsViewModel TransactionsViewModel { get; }
+        public EventsViewModel EventsViewModel { get; }
 
-        private void LoadData()
-        {
-            Books.Clear();
-            foreach (var book in _service.GetAllBooks())
-                Books.Add(new ObservableBook(book));
-
-            Users.Clear();
-            foreach (var user in _service.GetAllUsers())
-                Users.Add(new ObservableUser(user));
-        }
-
-        private void Save()
-        {
-            foreach (var book in Books)
-                _service.UpdateBook(book.GetBook());
-            
-            foreach (var user in Users)
-                _service.UpdateUser(user.GetUser());
-        }
+        public ICommand ShowBooksCommand => new Commands.RelayCommand(p => CurrentViewModel = BooksViewModel);
+        public ICommand ShowUsersCommand => new Commands.RelayCommand(p => CurrentViewModel = UsersViewModel);
+        public ICommand ShowBookCopiesCommand => new Commands.RelayCommand(p => CurrentViewModel = BookCopiesViewModel);
+        public ICommand ShowTransactionsCommand => new Commands.RelayCommand(p => CurrentViewModel = TransactionsViewModel);
+        public ICommand ShowEventsCommand => new Commands.RelayCommand(p => CurrentViewModel = EventsViewModel);
     }
 }

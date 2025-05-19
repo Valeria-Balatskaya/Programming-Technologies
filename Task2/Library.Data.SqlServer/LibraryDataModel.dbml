@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="LibraryDatabase" Class="LibraryDataModelDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\LibraryDatabase.mdf;Integrated Security=True" SettingsObjectName="Library.Data.SqlServer.Properties.Settings" SettingsPropertyName="LibraryDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Users" Member="Users">
+    <Type Name="Users">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="PhoneNumber" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RegistrationDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Users_LibraryEvents" Member="LibraryEvents" ThisKey="Id" OtherKey="UserId" Type="LibraryEvents" />
+      <Association Name="Users_BookCopies" Member="BookCopies" ThisKey="Id" OtherKey="CurrentBorrowerId" Type="BookCopies" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LibraryEvents" Member="LibraryEvents">
+    <Type Name="LibraryEvents">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ISBN" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="BookCopyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Timestamp" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Users_LibraryEvents" Member="Users" ThisKey="UserId" OtherKey="Id" Type="Users" IsForeignKey="true" />
+      <Association Name="Books_LibraryEvents" Member="Books" ThisKey="ISBN" OtherKey="ISBN" Type="Books" IsForeignKey="true" />
+      <Association Name="BookCopies_LibraryEvents" Member="BookCopies" ThisKey="BookCopyId" OtherKey="Id" Type="BookCopies" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Books" Member="Books">
+    <Type Name="Books">
+      <Column Name="ISBN" Type="System.String" DbType="NVarChar(20) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Author" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Publisher" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="PublicationYear" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Genre" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Books_LibraryEvents" Member="LibraryEvents" ThisKey="ISBN" OtherKey="ISBN" Type="LibraryEvents" />
+      <Association Name="Books_BookCopies" Member="BookCopies" ThisKey="ISBN" OtherKey="ISBN" Type="BookCopies" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookCopies" Member="BookCopies">
+    <Type Name="BookCopies">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ISBN" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AcquisitionDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Location" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="CurrentBorrowerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DueDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="BookCopies_LibraryEvents" Member="LibraryEvents" ThisKey="Id" OtherKey="BookCopyId" Type="LibraryEvents" />
+      <Association Name="Users_BookCopies" Member="Users" ThisKey="CurrentBorrowerId" OtherKey="Id" Type="Users" IsForeignKey="true" />
+      <Association Name="Books_BookCopies" Member="Books" ThisKey="ISBN" OtherKey="ISBN" Type="Books" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

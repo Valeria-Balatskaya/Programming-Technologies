@@ -18,7 +18,7 @@ public class MockLibraryDataContext : ILibraryDataContext
 
     public void SubmitChanges()
     {
-        //No-op in mock
+       
     }
 
     public Books CreateBook()
@@ -71,6 +71,6 @@ public class MockLibraryDataContext : ILibraryDataContext
 
     public void Dispose()
     {
-        //No resources to dispose
+        
     }
 }

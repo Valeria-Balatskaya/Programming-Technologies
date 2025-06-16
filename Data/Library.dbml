@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="LibraryDatabase" Class="LibraryDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.users" Member="users">
+    <Type Name="user">
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Surname" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Guid" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="FineAmount" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="user_event" Member="events" ThisKey="FineAmount,Guid" OtherKey="FineAmount,UserGuid" Type="event" />
+      <Association Name="user_book" Member="books" ThisKey="Guid" OtherKey="OwnerId" Type="book" />
+    </Type>
+  </Table>
+  <Table Name="dbo.events" Member="events">
+    <Type Name="event">
+      <Column Name="EventID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EventName" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="EventDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="BookGuid" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UserGuid" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="FineAmount" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Association Name="user_event" Member="user" ThisKey="FineAmount,UserGuid" OtherKey="FineAmount,Guid" Type="user" IsForeignKey="true" />
+      <Association Name="book_event" Member="book" ThisKey="BookGuid" OtherKey="GUID" Type="book" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.books" Member="books">
+    <Type Name="book">
+      <Column Name="ISBN" Type="System.String" DbType="NVarChar(14) NOT NULL" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Author" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Genre" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="PublishedDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="GUID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Pages" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsAvailable" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="OwnerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="book_event" Member="events" ThisKey="GUID" OtherKey="BookGuid" Type="event" />
+      <Association Name="user_book" Member="user" ThisKey="OwnerId" OtherKey="Guid" Type="user" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

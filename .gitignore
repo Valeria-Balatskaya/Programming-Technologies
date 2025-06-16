@@ -16,6 +16,9 @@
 # Mono auto generated files
 mono_crash.*
 
+# macOS system files
+.DS_Store
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -265,9 +268,7 @@ ServiceFabricBackup/
 
 # SQL Server files
 *.mdf
-!LibraryDatabase.mdf
 *.ldf
-!LibraryDatabase_log.ldf
 *.ndf
 
 # Business Intelligence projects
